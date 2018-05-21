@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -15,12 +16,13 @@ import com.rlms.constants.RLMSConstants;
 import com.rlms.constants.Status;
 import com.rlms.contract.AMCDetailsDto;
 import com.rlms.contract.LiftDtlsDto;
-import com.rlms.contract.UserMetaInfo;
+import com.rlms.model.RlmsBranchCustomerMap;
+import com.rlms.model.RlmsEventDtls;
 import com.rlms.model.RlmsLiftAmcDtls;
 import com.rlms.model.RlmsLiftCustomerMap;
 import com.rlms.model.RlmsLiftMaster;
-import com.rlms.model.RlmsSpocRoleMaster;
 import com.rlms.utils.DateUtils;
+
 @Repository
 public class LiftDaoImpl implements LiftDao{
 	@Autowired
@@ -39,17 +41,6 @@ public class LiftDaoImpl implements LiftDao{
 					 .add(Restrictions.eq("activeFlag", RLMSConstants.ACTIVE.getId()));
 			 List<RlmsLiftCustomerMap> listOfAllLifts = criteria.list();
 			 return listOfAllLifts;
-		
-	}
-	
-	@SuppressWarnings("unchecked")
-	public RlmsLiftMaster getLiftById(Integer liftId){		
-			 Session session = this.sessionFactory.getCurrentSession();
-			 Criteria criteria = session.createCriteria(RlmsLiftMaster.class)					 
-					 .add(Restrictions.eq("liftId", liftId));
-					 
-			 RlmsLiftMaster liftM = (RlmsLiftMaster)criteria.uniqueResult();
-			 return liftM;
 		
 	}
 	
@@ -269,6 +260,19 @@ public class LiftDaoImpl implements LiftDao{
 			 return listOFAMCdtlsForAllLifts;
 		
 	}	
+	/*@SuppressWarnings("unchecked")
+	public List<RlmsLiftCustomerMap> getAllLiftsStatusForBranchs(List<Integer> companyBranchIds){		
+			 Session session = this.sessionFactory.getCurrentSession();
+			 Criteria criteria = session.createCriteria(RlmsLiftCustomerMap.class)
+					 .createAlias("branchCustomerMap.companyBranchMapDtls", "branchCompanyMap")
+					 .add(Restrictions.in("branchCompanyMap.companyBranchMapId", companyBranchIds));
+					 .add(Restrictions.eq("activeFlag", RLMSConstants.ACTIVE.getId()));
+			 List<RlmsLiftCustomerMap> listOfAllLifts = criteria.list();
+			 return listOfAllLifts;
+		
+	}	*/
+	
+	
 	@SuppressWarnings("unchecked")
 	public List<RlmsLiftCustomerMap> getAllLiftsStatusForBranchs(List<Integer> companyBranchIds){		
 			 Session session = this.sessionFactory.getCurrentSession();
@@ -280,5 +284,42 @@ public class LiftDaoImpl implements LiftDao{
 			 return listOfAllLifts;
 		
 	}	
-	
+	@Override
+	public RlmsLiftMaster getLiftIdByImei(String Imei) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(RlmsLiftMaster.class).add(Restrictions.eq("imei", Imei));
+		return (RlmsLiftMaster)criteria.uniqueResult();
+	}
+	@Override
+	public void saveEventDtls(RlmsEventDtls eventDtls){
+		this.sessionFactory.getCurrentSession().save(eventDtls);
+	}
+
+	@Override
+	public List<Object[]> liftCountByBranchCustomerMapId(int liftCountByBranchCustomerMapId) {
+	Session session = this.sessionFactory.getCurrentSession();
+		
+	  String sql ="select branch_cust_map_id,count(*) from rlms_lift_customer_map where  branch_cust_map_id="+liftCountByBranchCustomerMapId+"";
+    	SQLQuery query = session.createSQLQuery(sql);
+	 	List<Object[]>liftCount = query.list();
+		return liftCount;
+	}
+
+	@Override
+	public RlmsBranchCustomerMap getBranchCustomerMapByBranchCustomerMapId(int branchCustoMapId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		 Criteria criteria = session.createCriteria(RlmsBranchCustomerMap.class);
+				  criteria.add(Restrictions.eq("branchCustoMapId", branchCustoMapId));
+				  RlmsBranchCustomerMap branchCustomerMap= (RlmsBranchCustomerMap) criteria.uniqueResult();
+		return branchCustomerMap;
+	}
+
+	@Override
+	public RlmsLiftAmcDtls getRlmsLiftAmcDtlsByLiftCustomerMapId(int rlmsLiftCustomerMapId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(RlmsLiftAmcDtls.class);
+		criteria.add(Restrictions.eq("liftCustomerMap.liftCustomerMapId",rlmsLiftCustomerMapId ));
+		return (RlmsLiftAmcDtls) criteria.uniqueResult();
+	}
+
 }

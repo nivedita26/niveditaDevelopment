@@ -64,4 +64,7 @@ public class AddNewUserDto {
 	public void setPinCode(Integer pinCode) {
 		this.pinCode = pinCode;
 	}
+	
+	
+
 }

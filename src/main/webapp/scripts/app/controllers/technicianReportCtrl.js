@@ -14,7 +14,7 @@
 			 $scope.companies = [];
 		} 
 		// showCompnay Flag
-		if ($rootScope.loggedInUserInfo.data.userRole.rlmsSpocRoleMaster.roleLevel == 1) {
+		if ($rootScope.loggedInUserInfo.data.userRole.rlmsSpocRoleMaster.roleLevel < 3 ) {
 			$scope.showCompany = true;
 			loadCompanyData();
 		} else {
@@ -28,10 +28,10 @@
 		} else {
 			$scope.showBranch = false;
 		}
+		
 		function loadCompanyData() {
 			serviceApi
-					.doPostWithoutData(
-							'/RLMS/admin/getAllApplicableCompanies')
+					.doPostWithoutData('/RLMS/admin/getAllApplicableCompanies')
 					.then(function(response) {
 						$scope.companies = response;
 					});
@@ -48,9 +48,7 @@
 				}
 			}
 			serviceApi
-					.doPostWithData(
-							'/RLMS/admin/getAllBranchesForCompany',
-							companyData)
+					.doPostWithData('/RLMS/admin/getAllBranchesForCompany',companyData)
 					.then(function(response) {
 						$scope.branches = response;
 						$scope.selectedBranch.selected=undefined;
