@@ -4,10 +4,11 @@ import java.util.List;
 
 import com.rlms.contract.AMCDetailsDto;
 import com.rlms.contract.LiftDtlsDto;
+import com.rlms.model.RlmsBranchCustomerMap;
+import com.rlms.model.RlmsEventDtls;
 import com.rlms.model.RlmsLiftAmcDtls;
 import com.rlms.model.RlmsLiftCustomerMap;
 import com.rlms.model.RlmsLiftMaster;
-
 
 public interface LiftDao {	
 	public List<RlmsLiftCustomerMap> getAllLiftsForCustomers(List<Integer> listOfCuistomers);
@@ -52,6 +53,14 @@ public interface LiftDao {
 	
 	public List<RlmsLiftCustomerMap> getAllLiftsStatusForBranchs(List<Integer> companyBranchIds);
 	
-	public RlmsLiftMaster getLiftById(Integer liftId);
+	public List<Object []> liftCountByBranchCustomerMapId (int liftCountByBranchCustomerMapId);
+
+	public void saveEventDtls(RlmsEventDtls eventDtls);
+	
+	public RlmsLiftMaster getLiftIdByImei(String Imei);
+	
+	public RlmsBranchCustomerMap getBranchCustomerMapByBranchCustomerMapId(int  Imei);
+	
+	public RlmsLiftAmcDtls getRlmsLiftAmcDtlsByLiftCustomerMapId(int rlmsLiftCustomerMapId);
 
 }
