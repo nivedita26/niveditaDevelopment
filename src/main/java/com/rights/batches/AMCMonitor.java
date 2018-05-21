@@ -2,15 +2,17 @@ package com.rights.batches;
 
 import java.io.UnsupportedEncodingException;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import com.rlms.service.ReportService;
 
 public class AMCMonitor {
+
 	
 	private static final Logger logger = Logger.getLogger(AMCMonitor.class);
 	
@@ -26,6 +28,7 @@ public class AMCMonitor {
 		 try {
 			 amcMonitor.executeAMCBatch();
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 			logger.error(ExceptionUtils.getFullStackTrace(e));	 
 		}

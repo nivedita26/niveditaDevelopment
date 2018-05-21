@@ -15,6 +15,9 @@ import javax.persistence.Table;
 @Table(name="rlms_customer_master")
 public class RlmsCustomerMaster implements Serializable{
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 	private Integer customerId;
 	private String customerName;
@@ -283,5 +286,7 @@ public class RlmsCustomerMaster implements Serializable{
 	public void setWatchmenEmail(String watchmenEmail) {
 		this.watchmenEmail = watchmenEmail;
 	}
+	
+	
 	
 }

@@ -265,7 +265,8 @@ public class UserServiceImpl implements UserService {
 					metaInfo);
 			Integer userRoleId = this.userRoleDao.saveUserRole(userRole);
 			statusMessage = PropertyUtils
-					.getPrpertyFromContext(RlmsErrorType.ROLE_SUCCESSFULLY_ASSIGNED.getMessage());
+					.getPrpertyFromContext(RlmsErrorType.ROLE_SUCCESSFULLY_ASSIGNED
+							.getMessage());
 			this.sendAssignedRoleMail(userRoleId, userRole);
 		} else {
 			statusMessage = PropertyUtils
@@ -586,6 +587,13 @@ public class UserServiceImpl implements UserService {
 		return PropertyUtils.getPrpertyFromContext(RlmsErrorType.TECHNICIAN_LOCATION_UPDATED
 				.getMessage());
 
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	public RlmsUserApplicationMapDtls getUserAppDetails(Integer userId,
+			Integer userRefType) {
+		// TODO Auto-generated method stub
+		return this.userRoleDao.getUserAppDetails(userId, userRefType);
 	}
 
 }

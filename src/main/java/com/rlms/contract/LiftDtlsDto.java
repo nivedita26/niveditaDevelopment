@@ -1,6 +1,5 @@
 package com.rlms.contract;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 public class LiftDtlsDto {
@@ -16,6 +15,7 @@ public class LiftDtlsDto {
 	private Integer companyId;
 	private Integer branchCompanyMapId;
 	private Integer branchCustomerMapId;
+	private String liftImei;
 	
 	private Integer liftId;
 	private String latitude;
@@ -71,15 +71,8 @@ public class LiftDtlsDto {
 	private Integer liftType;
 	private boolean isBlank;
 	private Integer activeFlag;
-	private String imei;
-	private BigInteger totalLiftCountForCustomer;
 	
-	public BigInteger getTotalLiftCountForCustomer() {
-		return totalLiftCountForCustomer;
-	}
-	public void setTotalLiftCountForCustomer(BigInteger totalLiftCountForCustomer) {
-		this.totalLiftCountForCustomer = totalLiftCountForCustomer;
-	}
+	
 	public String getLiftNumber() {
 		return liftNumber;
 	}
@@ -469,21 +462,12 @@ public class LiftDtlsDto {
 	}
 	public void setAmcTypeStr(String amcTypeStr) {
 		this.amcTypeStr = amcTypeStr;
+	}
+	public String getLiftImei() {
+		return this.liftImei;
+	}
+	public void setLiftImei(String liftImei) {
+		this.liftImei = liftImei;
 	}	 
-	public String getImei() {
-		return imei;
-	}
-	public void setImei(String imei) {
-		this.imei = imei;
-	}
-	
-	public String lmsEventFromContactNo;
-
-	public String getLmsEventFromContactNo() {
-		return lmsEventFromContactNo;
-	}
-	public void setLmsEventFromContactNo(String lmsEventFromContactNo) {
-		this.lmsEventFromContactNo = lmsEventFromContactNo;
-	}
 	
 }

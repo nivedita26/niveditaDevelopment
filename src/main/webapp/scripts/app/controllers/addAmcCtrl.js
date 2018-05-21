@@ -6,8 +6,6 @@
 			//loadCompayInfo();
 			$scope.alert = { type: 'success', msg: 'You successfully Added AMC details.',close:true };
 			$scope.showAlert = false;
-			$scope.showCompany = false;
-			$scope.showBranch = false;
 			$scope.companies = [];
 			$scope.newCallTypes={};
 			$scope.callTypesArray = [];
@@ -35,8 +33,6 @@
 			
 			function initAddAMC() {
 				$scope.customerSelected = false;
-				$scope.selectedCompany={};
-				$scope.selectedBranch = {};
 				$scope.selectedCustomer = {};
 				$scope.selectedLift = {};
 				$scope.selectedAmc = {};
@@ -97,47 +93,6 @@
 			      else
 			    	  $scope.openFlag[which] = false;
 			}
-			
-			$scope.loadBranchData = function(){
-				var companyData={};
-				if($scope.showCompany == true){
-	  	    		companyData = {
-							companyId : $scope.selectedCompany.selected!=undefined?$scope.selectedCompany.selected.companyId:0
-						}
-	  	    	}else{
-	  	    		companyData = {
-							companyId : $rootScope.loggedInUserInfo.data.userRole.rlmsCompanyMaster.companyId
-						}
-	  	    	}
-			    serviceApi.doPostWithData('/RLMS/admin/getAllBranchesForCompany',companyData)
-			    .then(function(response){
-			    	$scope.branches = response;
-			    	$scope.selectedBranch.selected = undefined;
-			    	$scope.selectedCustomer.selected = undefined;
-			    	var emptyArray=[];
-			    	$scope.myData = emptyArray;
-			    });
-			}
-			$scope.loadCustomerData = function(){
-				var branchData ={};
-	  	    	if($scope.showBranch == true){
-	  	    		branchData = {
-	  	    			branchCompanyMapId : $scope.selectedBranch.selected!=null?$scope.selectedBranch.selected.companyBranchMapId:0
-						}
-	  	    	}else{
-	  	    		branchData = {
-	  	    			branchCompanyMapId : $rootScope.loggedInUserInfo.data.userRole.rlmsCompanyBranchMapDtls.companyBranchMapId
-						}
-	  	    	}
-	  	    	serviceApi.doPostWithData('/RLMS/admin/getAllCustomersForBranch',branchData)
-	 	         .then(function(customerData) {
-	 	        	 $scope.cutomers = customerData;
-	 	        	 $scope.selectedCustomer.selected = undefined;
-	 	        	var emptyArray=[];
-			    	$scope.myData = emptyArray;
-	 	         })
-			}
-			
 			$scope.loadLifts = function() {
 				
 				var dataToSend = {
@@ -199,20 +154,7 @@
 			$scope.backPage =function(){
 				 $window.history.back();
 			}
-			
-		  	
-		  	//showBranch Flag
-		  	if($rootScope.loggedInUserInfo.data.userRole.rlmsSpocRoleMaster.roleLevel == 1){
-				$scope.showBranch= true;
-				$scope.loadBranchData();
-
-			}else{
-				$scope.showBranch=false;
-				$scope.loadCustomerData();
-
-			}
-		  	
-			/*$scope.searchCustomer = function(query){
+			$scope.searchCustomer = function(query){
 				//console.log(query);
 				if(query && query.length > 1){
 				 var dataToSend = {
@@ -227,6 +169,6 @@
 					});
 				} 
 				
-			}*/
+			}
 	}]);
 })();
