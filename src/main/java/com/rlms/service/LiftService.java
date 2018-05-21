@@ -7,7 +7,6 @@ import com.rlms.contract.CustomerDtlsDto;
 import com.rlms.contract.LiftDtlsDto;
 import com.rlms.contract.UserMetaInfo;
 import com.rlms.model.RlmsLiftCustomerMap;
-import com.rlms.model.RlmsLiftMaster;
 
 public interface LiftService {
 
@@ -31,11 +30,6 @@ public interface LiftService {
 	
 	public List<LiftDtlsDto> getLiftStatusForBranch(List<Integer> companyBranchIds, UserMetaInfo metaInfo);
 	
-	public RlmsLiftMaster getLiftById(Integer liftId);
-	
-	public Integer mergeLiftM(RlmsLiftMaster liftMaster);
-	
-	public void updateLiftParams(RlmsLiftMaster liftMaster);
-	
-	public List<LiftDtlsDto> getAllLiftsForTechnician(Integer userRoleId);
+	public List<LiftDtlsDto> getLiftCountForBranch(List<Integer> companyBranchIds, UserMetaInfo metaInfo);
+
 }

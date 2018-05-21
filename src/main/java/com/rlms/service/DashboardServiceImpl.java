@@ -1,22 +1,26 @@
 package com.rlms.service;
 
-import java.text.ParseException;
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import java.util.TimeZone;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.rlms.constants.AMCType;
 import com.rlms.constants.RLMSConstants;
-import com.rlms.constants.RlmsErrorType;
 import com.rlms.constants.SpocRoleConstants;
 import com.rlms.constants.Status;
 import com.rlms.contract.AMCDetailsDto;
@@ -26,7 +30,7 @@ import com.rlms.contract.ComplaintsDto;
 import com.rlms.contract.CustomerDtlsDto;
 import com.rlms.contract.EventDtlsDto;
 import com.rlms.contract.LiftDtlsDto;
-import com.rlms.contract.SiteVisitDtlsDto;
+import com.rlms.contract.TechnicianCount;
 import com.rlms.contract.UserMetaInfo;
 import com.rlms.contract.UserRoleDtlsDTO;
 import com.rlms.dao.BranchDao;
@@ -45,11 +49,18 @@ import com.rlms.model.RlmsMemberMaster;
 import com.rlms.model.RlmsSiteVisitDtls;
 import com.rlms.model.RlmsUserRoles;
 import com.rlms.predicates.LiftPredicate;
+import com.rlms.propertyconfiguration.ParameterIndexPropertyConfig;
+import com.rlms.propertyconfiguration.PropertyConfiguration;
 import com.rlms.utils.DateUtils;
-import com.rlms.utils.PropertyUtils;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {
+	static ApplicationContext applicationContext = new AnnotationConfigApplicationContext(PropertyConfiguration.class);
+	static   ParameterIndexPropertyConfig paramIndex= applicationContext.getBean(ParameterIndexPropertyConfig.class);
+	
+	private static final Logger logger = Logger.getLogger(DashboardServiceImpl.class);
+
+	
 	@Autowired
 	private DashboardDao dashboardDao;
 	@Autowired
@@ -64,7 +75,7 @@ public class DashboardServiceImpl implements DashboardService {
 	CustomerDao customerDao;
 	@Autowired
 	ComplaintsDao complaintsDao;
-
+   
 	@Transactional(propagation = Propagation.REQUIRED)
 	public List<CustomerDtlsDto> getAllCustomersForBranch(
 			List<Integer> listOfApplicableBranchIds) {
@@ -74,7 +85,7 @@ public class DashboardServiceImpl implements DashboardService {
 		return this.constructListOfCustomerDtlsDto(listOfAllCustomers);
 	}
 	
-	@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED)
 	public List<RlmsLiftCustomerMap> getAllLiftsForBranchsOrCustomer(
 			LiftDtlsDto dto) {
 		List<RlmsLiftCustomerMap> list = this.liftDao
@@ -204,7 +215,6 @@ public class DashboardServiceImpl implements DashboardService {
 			dto.setRegistrationTypeStr(RLMSConstants.COMPLAINT_REG_TYPE_LIFT_EVENT
 					.getName());
 		}
-		dto.setLiftNumber(complaintMaster.getLiftCustomerMap().getLiftMaster().getLiftNumber());
 		dto.setComplaintId(complaintMaster.getComplaintId());
 		dto.setComplaintNumber(complaintMaster.getComplaintNumber());
 		dto.setCustomerName(complaintMaster.getLiftCustomerMap()
@@ -288,7 +298,7 @@ public class DashboardServiceImpl implements DashboardService {
 					.getName();
 		}
 		dto.setComplaintent(complaintent);
-		dto.setUpdatedDate(complaintMaster.getRegistrationDate());
+		dto.setUpdatedDate(complaintMaster.getUpdatedDate());
 		dto.setCompanyName(complaintMaster.getLiftCustomerMap().getBranchCustomerMap().getCompanyBranchMapDtls().getRlmsCompanyMaster().getCompanyName());
 		return dto;
 	}
@@ -445,10 +455,30 @@ public class DashboardServiceImpl implements DashboardService {
 			dto.setContactNumber(rlmsUserRoles.getRlmsUserMaster().getContactNumber());
 			dto.setUserRoleId(rlmsUserRoles.getUserRoleId());
 			dto.setActiveFlag(rlmsUserRoles.getActiveFlag());
-			dto.setBranchName(rlmsUserRoles.getRlmsCompanyBranchMapDtls().getRlmsBranchMaster().getBranchName());
 	        listOFUserAdtls.add(dto);
 		}
 		return listOFUserAdtls;
+	}
+	
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public List<TechnicianCount> getListOfTechniciansForBranch(
+			List<Integer> companyBranchMapIds) {
+		List<UserRoleDtlsDTO> listOFUserAdtls = new ArrayList<UserRoleDtlsDTO>();
+		List<TechnicianCount> listOfTechniciansCount = this.getListOfTechniciansForBranchByCompanybranchMappingId(companyBranchMapIds);
+	/*	for (RlmsUserRoles rlmsUserRoles : listOfAllTechnicians) {
+			UserRoleDtlsDTO dto = new UserRoleDtlsDTO();
+			dto.setUserId(rlmsUserRoles.getRlmsUserMaster().getUserId());
+			dto.setCompanyBranchMapId(rlmsUserRoles.getRlmsCompanyBranchMapDtls().getCompanyBranchMapId());
+			dto.setCompanyName(rlmsUserRoles.getRlmsCompanyMaster().getCompanyName());
+			dto.setCity(rlmsUserRoles.getRlmsUserMaster().getCity());
+			dto.setName(rlmsUserRoles.getRlmsUserMaster().getFirstName() + " " + rlmsUserRoles.getRlmsUserMaster().getLastName());
+			dto.setContactNumber(rlmsUserRoles.getRlmsUserMaster().getContactNumber());
+			dto.setUserRoleId(rlmsUserRoles.getUserRoleId());
+			dto.setActiveFlag(rlmsUserRoles.getActiveFlag());
+	        listOFUserAdtls.add(dto);
+		}*/
+		return listOfTechniciansCount;
 	}
 	public List<RlmsUserRoles> getListOfTechniciansBy(
 			List<Integer> compBranchMapId) {
@@ -457,15 +487,48 @@ public class DashboardServiceImpl implements DashboardService {
 		listOfUserRoles = this.dashboardDao.getAllUserWithRoleFor(compBranchMapId,
 				SpocRoleConstants.TECHNICIAN.getSpocRoleId());
 		List<RlmsUserRoles> listOfActiveUserRoles = new ArrayList<RlmsUserRoles>();
-		for (RlmsUserRoles rlmsUserRoles : listOfUserRoles) {
-			if(rlmsUserRoles.getRlmsUserMaster().getActiveFlag().equals(RLMSConstants.ACTIVE.getId())){
-				listOfActiveUserRoles.add(rlmsUserRoles);
-			}
-		}
-
-		return listOfActiveUserRoles;
+		
+		return listOfUserRoles;
 	}
-	
+	public List<TechnicianCount> getListOfTechniciansForBranchByCompanybranchMappingId(
+		List<Integer> compBranchMapId) {
+		List<Object[]>listOfObject = new ArrayList<Object[]>();
+       List<TechnicianCount> technicianCountsList =new ArrayList<TechnicianCount>();
+		listOfObject = this.dashboardDao.getTechnicianCountByCompanyBranchMap(compBranchMapId,
+				SpocRoleConstants.TECHNICIAN.getSpocRoleId());
+		if(listOfObject!=null && !listOfObject.isEmpty()) {
+				for (Object[] objects : listOfObject) {
+					TechnicianCount technicianCounts = new TechnicianCount();
+					technicianCounts.setCount((BigInteger)objects[1]);
+					List<Object[]> objectList = dashboardDao.getTechnicianActiveStatusCountByCompanyBranchMap((Integer)objects[0],SpocRoleConstants.TECHNICIAN.getSpocRoleId());
+					for (Object[] obj : objectList) {
+						if(objectList.size()<2) {
+							if((Integer)obj[0]==1) {
+							technicianCounts.setTotolActiveTechnician((BigInteger)obj[1]);
+							}
+							else {
+								technicianCounts.setTotalInactiveTechnician((BigInteger)obj[1]);
+							}
+						}
+						else {
+							if((Integer)obj[0]==0) {
+								technicianCounts.setTotalInactiveTechnician((BigInteger)obj[1]);
+							}
+							else {
+								technicianCounts.setTotolActiveTechnician((BigInteger)obj[1]);
+							}
+						}
+					}
+					RlmsCompanyBranchMapDtls companyBranchMapDtls= dashboardDao.getCompanyBranchMapDtlsForDashboard((Integer)objects[0]);
+					if(companyBranchMapDtls!=null) {
+						technicianCounts.setBranchName(companyBranchMapDtls.getRlmsBranchMaster().getBranchName());
+						technicianCounts.setCity(companyBranchMapDtls.getRlmsBranchMaster().getCity());
+						technicianCountsList.add(technicianCounts);		
+				  }
+				}
+		}
+		return technicianCountsList;
+	}
 	@Transactional(propagation = Propagation.REQUIRED)
 	public List<AMCDetailsDto> getAllAMCDetails(List<Integer> liftCustomerMapId,AMCDetailsDto amcDetailsDto) {
 		List<AMCDetailsDto> listOFAMCDetails = new ArrayList<AMCDetailsDto>();
@@ -523,6 +586,9 @@ public class DashboardServiceImpl implements DashboardService {
 			branchDtlsDto.setCity(rlmsCompanyBranchMapDtls.getRlmsBranchMaster().getCity());
 			branchDtlsDto.setPinCode(rlmsCompanyBranchMapDtls.getRlmsBranchMaster().getPincode());
 			branchDtlsDto.setCompanyName(rlmsCompanyBranchMapDtls.getRlmsCompanyMaster().getCompanyName());
+			branchDtlsDto.setActiveFlag(rlmsCompanyBranchMapDtls.getActiveFlag());
+		
+			
 			/*List<UserDtlsDto> listOfAllTech = this.getListOFAllTEchnicians(companyBranchMapId);
 			branchDtlsDto.setListOfAllTechnicians(listOfAllTech);
 			if(null != listOfAllTech && !listOfAllTech.isEmpty()){
@@ -544,47 +610,19 @@ public class DashboardServiceImpl implements DashboardService {
 	@Transactional(propagation = Propagation.REQUIRED)
 	public List<EventDtlsDto> getListOfEvetnDetails(List<Integer> companyBranchIds,
 			UserMetaInfo metaInfo) {
-		List<RlmsEventDtls> allEvent = this.dashboardDao.getAllEventDtlsForDashboard(companyBranchIds);
 		
-		List<EventDtlsDto> listOFDto = new ArrayList<EventDtlsDto>();
-		for (RlmsEventDtls rlmsEventDtls : allEvent) {
-			//RlmsUserRoles userRoles = null;
-			//this.
-			RlmsLiftCustomerMap liftCustomerMap = this.liftDao.getLiftCustomerMapById(rlmsEventDtls.getLiftCustomerMapId());
-					
-			EventDtlsDto dto = new EventDtlsDto();
-			dto.setEventId(rlmsEventDtls.getEventId());
-			dto.setEventType(rlmsEventDtls.getEventType());
-			dto.setEventDescription(rlmsEventDtls.getEventDescription());
-			dto.setGeneratedDate(rlmsEventDtls.getGeneratedDate());
-			dto.setLiftNumber(liftCustomerMap.getLiftMaster().getLiftNumber());
-			dto.setLiftAddress(liftCustomerMap.getLiftMaster().getAddress());
-			dto.setCustomerName(liftCustomerMap.getBranchCustomerMap().getCustomerMaster().getCustomerName());
-			
-			listOFDto.add(dto);
-			
-		}
-		return listOFDto;
-	}
+		List<RlmsEventDtls> allEvent = this.dashboardDao.getAllEventDtlsForDashboard(companyBranchIds);
+		               
+		return 	 this.constructEventDetailsList(allEvent);	
 
-	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
-	public String addEvent(EventDtlsDto eventDetailsDto) {
-		RlmsEventDtls eventDtls = null;
-		try {
-			eventDtls = this.constructVisitDtls(eventDetailsDto);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		this.saveEventDtls(eventDtls);
-		return PropertyUtils.getPrpertyFromContext(RlmsErrorType.VISIT_UPDATED_SUCCESS.getMessage());
 	}
-	
-	private RlmsEventDtls constructVisitDtls(EventDtlsDto dto) throws ParseException{
+    
+	 
+/*	private RlmsEventDtls constructVisitDtls(RlmsEventDtls dto) throws ParseException{
 		RlmsEventDtls eventDtls = new RlmsEventDtls();
 		eventDtls.setEventType(dto.getEventType());
 		eventDtls.setEventDescription(dto.getEventDescription());
-		eventDtls.setLiftCustomerMapId(dto.getLiftCustomerMapId());
+	//	eventDtls.setLiftCustomerMapId(dto.getLiftCustomerMapId());
 		eventDtls.setGeneratedDate(DateUtils.convertStringToDateWithTime(dto.getGeneratedDateStr()));
 		eventDtls.setGeneratedBy(dto.getGeneratedBy());
 		eventDtls.setUpdatedDate(DateUtils.convertStringToDateWithTime(dto.getUpdatedDateStr()));
@@ -592,7 +630,7 @@ public class DashboardServiceImpl implements DashboardService {
 		eventDtls.setActiveFlag(dto.getActiveFlag());
 		return eventDtls;
 	}
-	
+	*/
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void saveEventDtls(RlmsEventDtls eventDtls){
 		this.dashboardDao.saveEventDtls(eventDtls);
@@ -614,4 +652,54 @@ public class DashboardServiceImpl implements DashboardService {
 
 		return listOfAllComplaints;
 	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public List<EventDtlsDto> getListOfEventsByType(RlmsEventDtls rlmsEventDtls) {
+		List<EventDtlsDto>eventDetailsList = new ArrayList<EventDtlsDto>();
+		if(rlmsEventDtls!=null ) {
+			if(rlmsEventDtls.getEventType()!=null) {
+				List<RlmsEventDtls> rlmsEventDtlsList = dashboardDao.getListOfEventsByType(rlmsEventDtls);
+					if(rlmsEventDtlsList!=null && !rlmsEventDtlsList.isEmpty()) {
+						eventDetailsList = this.constructEventDetailsList(rlmsEventDtlsList);	
+					}
+					else {
+						logger.debug("event data not found");
+					}
+			}
+			else {
+				logger.debug("invalid event type");
+			}
+		}
+      else{
+    		   logger.debug("invalid getListOfEventsByType request");
+      }
+		return eventDetailsList;
+	}
+	public List<EventDtlsDto> constructEventDetailsList(List<RlmsEventDtls> rlmsEventDtlList){
+		 List<EventDtlsDto> eventDtlsDtoList = new ArrayList<>();
+		for (RlmsEventDtls rlmsEventDtls : rlmsEventDtlList) {
+			      EventDtlsDto eventDtlsDto = new EventDtlsDto();
+			      eventDtlsDto.setEventId(rlmsEventDtls.getEventId());
+			      eventDtlsDto.setEventService(rlmsEventDtls.getEventService());
+			      eventDtlsDto.setImei(rlmsEventDtls.getImeiId());
+			      eventDtlsDto.setEventType(rlmsEventDtls.getEventType());
+			      eventDtlsDto.setEventCode(rlmsEventDtls.getEventCode());
+			      eventDtlsDto.setEventDescription(rlmsEventDtls.getEventDescription());
+			      eventDtlsDto.setFloorNo(rlmsEventDtls.getFloorNo());
+			      
+			   //  convert epoch into date format
+			        DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			        format.setTimeZone(TimeZone.getTimeZone("IST"));
+			        String eventDate = format.format(rlmsEventDtls.getEventDate());
+			      		      
+			      eventDtlsDto.setDate(eventDate); 
+			      eventDtlsDto.setLiftCustomerMap(rlmsEventDtls.getRlmsLiftCustomerMap());
+			      eventDtlsDto.setActiveFlag(rlmsEventDtls.getActiveFlag());
+			      eventDtlsDto.setEventFromContactNo(rlmsEventDtls.getFromContact());
+			      eventDtlsDtoList.add(eventDtlsDto);
+		}
+		return eventDtlsDtoList;
+	}
+	
 }
