@@ -145,4 +145,6 @@ public class MemberDtlsDto {
 	public void setServiceCallType(Integer serviceCallType) {
 		this.serviceCallType = serviceCallType;
 	}
+	
+	
 }

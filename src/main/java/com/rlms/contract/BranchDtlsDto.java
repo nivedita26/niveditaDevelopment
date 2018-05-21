@@ -16,15 +16,8 @@ public class BranchDtlsDto {
 	private String city;
 	private String area;
 	private Integer pinCode;
-	private Integer activeFlag;
 	
 	
-	public Integer getActiveFlag() {
-		return activeFlag;
-	}
-	public void setActiveFlag(Integer activeFlag) {
-		this.activeFlag = activeFlag;
-	}
 	public Integer getCompanyId() {
 		return companyId;
 	}
@@ -97,4 +90,7 @@ public class BranchDtlsDto {
 	public void setPinCode(Integer pinCode) {
 		this.pinCode = pinCode;
 	}
+	
+	
+	
 }
