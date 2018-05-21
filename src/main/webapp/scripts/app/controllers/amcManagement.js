@@ -4,12 +4,15 @@
 	.controller('amcManagementCtrl', ['$scope', '$filter','serviceApi','$route','$http','utility','$rootScope', function($scope, $filter,serviceApi,$route,$http,utility,$rootScope) {
 		initAMCList();
 		$scope.cutomers=[];
+		$scope.showCompany = false;
+		$scope.showBranch = false;
 		$scope.goToAddAMC = function(){
 			window.location.hash = "#/add-amc";
 		}
 		function initAMCList(){
-			 $scope.selectedCustomer = {};	
 			 $scope.lifts=[];
+			 $scope.selectedCompany={};
+			 $scope.selectedBranch = {};
 			 $scope.selectedCustomer = {};
 			 $scope.selectedLift = {};
 			 $scope.selectedAmc = {};
@@ -34,7 +37,7 @@
 			 ]
 			 
 		} 
-		$scope.loadCustomerData = function(){
+		/*$scope.loadCustomerData = function(){
 			var branchData ={};
   	    	if($scope.showBranch == true){
   	    		branchData = {
@@ -49,7 +52,7 @@
  	         .then(function(customerData) {
  	        	 $scope.cutomers = customerData;
  	         })
-		}
+		}*/
 		//Show Member List
 		$scope.loadAMCList = function(){
 			$scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
@@ -85,10 +88,10 @@
 	  	        	  var details=[];
 	  	        	  for(var i=0;i<largeLoad.length;i++){
 	  	        		var detailsObj={};
-	  	        		if(!!largeLoad[i].customerName){
-	  	        			detailsObj["customerName"] =largeLoad[i].customerName;
+	  	        		if(!!largeLoad[i].firstName){
+	  	        			detailsObj["firstName"] =largeLoad[i].customerName;
 	  	        		}else{
-	  	        			detailsObj["customerName"] =" - ";
+	  	        			detailsObj["firstName"] =" - ";
 	  	        		}
 	  	        		if(!!largeLoad[i].liftNumber){
 	  	        			detailsObj["liftNumber"] =largeLoad[i].liftNumber;
@@ -146,9 +149,9 @@
 	  	        	  for(var i=0;i<largeLoad.length;i++){
 		  	        	var detailsObj={};
 	  	        		if(!!largeLoad[i].customerName){
-	  	        			detailsObj["customerName"] =largeLoad[i].customerName;
+	  	        			detailsObj["firstName"] =largeLoad[i].customerName;
 	  	        		}else{
-	  	        			detailsObj["customerName"] =" - ";
+	  	        			detailsObj["firstName"] =" - ";
 	  	        		}
 	  	        		if(!!largeLoad[i].liftNumber){
 	  	        			detailsObj["liftNumber"] =largeLoad[i].liftNumber;
@@ -242,7 +245,7 @@
 					displayName:"City",
 					width : 120
 		  	  },{
-					field : "customerName",
+					field : "firstName",
 					displayName:"Customer Name",
 					width : 120
 		  	  },{
@@ -260,6 +263,46 @@
 		  	  }
 	  	      ]
 	  	    };
+	  	    
+			$scope.loadBranchData = function(){
+				var companyData={};
+				if($scope.showCompany == true){
+	  	    		companyData = {
+							companyId : $scope.selectedCompany.selected!=undefined?$scope.selectedCompany.selected.companyId:0
+						}
+	  	    	}else{
+	  	    		companyData = {
+							companyId : $rootScope.loggedInUserInfo.data.userRole.rlmsCompanyMaster.companyId
+						}
+	  	    	}
+			    serviceApi.doPostWithData('/RLMS/admin/getAllBranchesForCompany',companyData)
+			    .then(function(response){
+			    	$scope.branches = response;
+			    	$scope.selectedBranch.selected = undefined;
+			    	$scope.selectedCustomer.selected = undefined;
+			    	var emptyArray=[];
+			    	$scope.myData = emptyArray;
+			    });
+			}
+			$scope.loadCustomerData = function(){
+				var branchData ={};
+	  	    	if($scope.showBranch == true){
+	  	    		branchData = {
+	  	    			branchCompanyMapId : $scope.selectedBranch.selected!=null?$scope.selectedBranch.selected.companyBranchMapId:0
+						}
+	  	    	}else{
+	  	    		branchData = {
+	  	    			branchCompanyMapId : $rootScope.loggedInUserInfo.data.userRole.rlmsCompanyBranchMapDtls.companyBranchMapId
+						}
+	  	    	}
+	  	    	serviceApi.doPostWithData('/RLMS/admin/getAllCustomersForBranch',branchData)
+	 	         .then(function(customerData) {
+	 	        	 $scope.cutomers = customerData;
+	 	        	 $scope.selectedCustomer.selected = undefined;
+	 	        	var emptyArray=[];
+			    	$scope.myData = emptyArray;
+	 	         })
+			}
 	  	  $scope.loadLifts = function() {
 				
 				var dataToSend = {
@@ -270,8 +313,23 @@
 						.then(function(liftData) {
 							$scope.lifts = liftData;
 						})
+	  		  
+	  		/*var dataToSend = {
+					branchCustomerMapId : $scope.selectedCustomer.selected.branchCustomerMapId
+				}
+				serviceApi.doPostWithData('/RLMS/complaint/getAllApplicableLifts',dataToSend)
+						.then(function(liftData) {
+							$scope.lifts = liftData;
+						})*/
+				
+				/*serviceApi.doPostWithData('/RLMS/admin/getAllCustomersForBranch',dataToSend)
+						.then(function(data) {
+							$scope.customerSelected = true;
+							$scope.companyName = data.companyName;
+							$scope.branchName = data.branchName
+						})*/
 			}
-	  	  $scope.searchCustomer = function(query){
+	  	  /*$scope.searchCustomer = function(query){
 				//console.log(query);
 				if(query && query.length > 1){
 				 var dataToSend = {
@@ -286,7 +344,7 @@
 					});
 				} 
 				
-			}
+			}*/
 	  	  $scope.resetAMCList = function(){
 	  		initAMCList();
 	  	  }
@@ -311,5 +369,16 @@
 			var tempStatus =[]
 			return data;
 	  	  }
+	  	  
+		  	if($rootScope.loggedInUserInfo.data.userRole.rlmsSpocRoleMaster.roleLevel == 1){
+				$scope.showBranch= true;
+				$scope.loadBranchData();
+
+			}else{
+				$scope.showBranch=false;
+				$scope.loadCustomerData();
+
+			}
+		  	
 	}]);
 })();
