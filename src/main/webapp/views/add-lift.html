@@ -46,14 +46,6 @@
 				<input ng-model="addLift.liftNumber" required class="form-control" name="liftNumber" type="text"/>
 			</div>
 		</div>
-		
-		<div class="form-group">
-			<label for="liftNumber" class="col-md-3 control-label">Lift Imei Number<sup class="red font-12">*</sup></label>
-			<div class="col-md-6">
-				<input ng-model="addLift.liftImei" required class="form-control" name="liftImei" type="text"/>
-			</div>
-		</div>
-		
 		<div class="form-group">
 			<label for="address" class="col-md-3 control-label">Address </label>
 			<div class="col-md-6"><input ng-model="addLift.address" class="form-control" type="text" name="address" ></div>
@@ -292,6 +284,15 @@
 			<label for="accessControl" class="col-md-3 control-label">Access Control</label>
 			<div class="col-md-6"><input ng-model="addLift.accessControl" class="form-control"  type="text" name="accessControl"></div>
 		</div>
+		<div class="form-group">
+			<label for="imei" class="col-md-3 control-label">IMEI Number</label>
+			<div class="col-md-6"><input ng-model="addLift.imei" class="form-control"  type="number" name="imei"></div>
+		</div>
+<div class="form-group">
+			<label for="lmsEventFromContactNo" class="col-md-3 control-label">Phone Number</label>
+			<div class="col-md-6"><input ng-model="addLift.lmsEventFromContactNo" class="form-control"  type="number" name="lmsEventFromContactNo"></div>
+		</div>
+		
 	</fieldset>
 	<fieldset title="Step 3">
 		<legend>Photos</legend>
