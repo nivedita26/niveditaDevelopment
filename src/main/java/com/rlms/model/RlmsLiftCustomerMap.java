@@ -20,6 +20,9 @@ import org.hibernate.envers.Audited;
 @Table(name = "rlms_lift_customer_map")
 public class RlmsLiftCustomerMap implements Serializable{
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 	private Integer liftCustomerMapId;
 	private RlmsLiftMaster liftMaster;

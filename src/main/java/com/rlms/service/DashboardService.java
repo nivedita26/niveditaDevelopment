@@ -9,7 +9,6 @@ import com.rlms.contract.ComplaintsDto;
 import com.rlms.contract.CustomerDtlsDto;
 import com.rlms.contract.EventDtlsDto;
 import com.rlms.contract.LiftDtlsDto;
-import com.rlms.contract.TechnicianCount;
 import com.rlms.contract.UserMetaInfo;
 import com.rlms.contract.UserRoleDtlsDTO;
 import com.rlms.model.RlmsCompanyBranchMapDtls;
@@ -27,7 +26,6 @@ public interface DashboardService {
 
 	public List<CustomerDtlsDto> getAllCustomersForBranch(
 			List<Integer> listOfApplicableBranchIds);
-	
 
 	public List<RlmsLiftCustomerMap> getAllLiftsForBranchsOrCustomer(
 			LiftDtlsDto dto);
@@ -51,13 +49,9 @@ public interface DashboardService {
 	public List<EventDtlsDto> getListOfEvetnDetails(List<Integer> companyBranchIds,
 			UserMetaInfo metaInfo);
 
+	public String addEvent(EventDtlsDto eventDetailsDto);
 	
 	public List<ComplaintsDto> getListOfAmcCallsBy(ComplaintsDtlsDto dto);
 	
-    public List<EventDtlsDto> getListOfEventsByType(RlmsEventDtls rlmsEventDtls);
-    
-    public List<TechnicianCount> getListOfTechniciansForBranch(
-			List<Integer> companyBranchMapIds) ;
+	public void saveEventDtls(RlmsEventDtls eventDtls);
 }
-	
-

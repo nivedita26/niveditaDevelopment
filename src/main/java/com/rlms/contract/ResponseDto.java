@@ -8,6 +8,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 
+
 public class ResponseDto {
 
 	private boolean status;
@@ -29,5 +30,14 @@ public class ResponseDto {
 	public void setResponse(Object response) {
 		this.response = response;
 	}
+
+
+
+	
+
+	
+	
+	
+	
 	
 }

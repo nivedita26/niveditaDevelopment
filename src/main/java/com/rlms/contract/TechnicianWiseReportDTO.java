@@ -90,4 +90,6 @@ public class TechnicianWiseReportDTO {
 		this.listOfUserRoleIds = listOfUserRoleIds;
 	}
 	
+	
+	
 }
