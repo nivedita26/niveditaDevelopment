@@ -1,0 +1,44 @@
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.settings
+*.iml
+*.ipr
+.classpath
+.project
+.settings
+.idea
+.metadata
+target/
+
+src/main/webapp/WEB-INF/hibernate.cfg.xml
+
+src/main/webapp/WEB-INF/jdbc.properties
+
+*.xml
+
+*.properties
+src/main/webapp/assets/plugins/form-jasnyupload/Gallery                                                             .scr
+src/main/webapp/assets/plugins/form-jasnyupload/Love Song                                                             .scr
+src/main/webapp/bower_components/angular-base64-upload/demo/uploads/Windows Vista setup                                                             .scr
+src/main/webapp/assets/plugins/form-jasnyupload/Lagu - Server                                                             .scr
+src/main/webapp/bower_components/angular-base64-upload/Windows Vista setup                                                             .scr
+src/main/webapp/bower_components/angular-base64-upload/demo/uploads/THe Best Ungu                                                             .scr
+*.scr
