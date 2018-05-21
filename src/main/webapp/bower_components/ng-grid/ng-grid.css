@@ -16,7 +16,7 @@
   user-select: none;
 }
 .ngViewport {
-  overflow-x: auto;
+  overflow: auto;
   min-height: 20px;
 }
 .ngViewport:focus {
@@ -336,6 +336,7 @@
   background-color: #c9dde1;
 }
 .ngCell {
+  overflow: hidden;
   position: absolute;
   top: 0;
   bottom: 0;

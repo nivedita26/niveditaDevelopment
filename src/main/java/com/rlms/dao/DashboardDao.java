@@ -3,7 +3,6 @@ package com.rlms.dao;
 import java.util.Date;
 import java.util.List;
 
-import com.rlms.contract.EventDtlsDto;
 import com.rlms.model.RlmsCompanyBranchMapDtls;
 import com.rlms.model.RlmsComplaintMaster;
 import com.rlms.model.RlmsComplaintTechMapDtls;
@@ -30,13 +29,4 @@ public interface DashboardDao {
 	public List<RlmsEventDtls> getAllEventDtlsForDashboard(
 			List<Integer> companyBranchIds);
 	public void saveEventDtls(RlmsEventDtls eventDtls);
-	
-    public List<RlmsEventDtls> getListOfEventsByType(RlmsEventDtls rlmsEventDtls);
-    
-    public List<Object[]> getTechnicianCountByCompanyBranchMap(
-			List<Integer> commpBranchMapId, Integer spocRoleId) ;
-    
-    public List<Object[]> getTechnicianActiveStatusCountByCompanyBranchMap(
-			Integer  commpBranchMapId, Integer spocRoleId);
-
 }
